@@ -12,8 +12,9 @@ logger.setLevel(logging.INFO)
 # Constants
 AWS_REGION = "us-east-1"
 
+
 def load_reddit_credentials():
-    """Load Reddit credentials from an external JSON file."""
+    # Load Reddit credentials from an external JSON file.
     try:
         with open('cred_reddit.json', 'r') as f:
             credentials = json.load(f)
@@ -22,12 +23,13 @@ def load_reddit_credentials():
         logger.error(f"File not found: {e}")
         sys.exit(1)
     except JSONDecodeError as e:
-        logger.error(f"The credentials file contains invalid JSON: "
+        logger.error(f"The JSON file contains invalid JSON: "
                      f"{e}")
         sys.exit(1)
     except Exception as e:
         logger.error(f"Error loading Reddit credentials: {e}")
         sys.exit(1)
+
 
 def load_emails():
     try:
@@ -38,11 +40,12 @@ def load_emails():
         logger.error(f"File not found: {e}")
         sys.exit(1)
     except JSONDecodeError as e:
-        logger.error(f"The credentials file contains invalid JSON: {e}")
+        logger.error(f"The JSON file contains invalid JSON: {e}")
         sys.exit(1)
     except Exception as e:
         logger.error(f"Error loading Reddit credentials: {e}")
         sys.exit(1)
+
 
 # Initialize PRAW with credentials
 def init_reddit(credentials):
@@ -51,6 +54,7 @@ def init_reddit(credentials):
         client_secret=credentials['client_secret'],
         user_agent=credentials['user_agent']
     )
+
 
 # Function to send an email with AWS SES
 def send_email(subject, body):
@@ -84,7 +88,7 @@ def fetch_and_send_posts(reddit):
 
 # Lambda handler or main entry point
 def lambda_handler(event, context):
-    credentials = load_reddit_credentials('cred_reddit.json')
+    credentials = load_reddit_credentials()
     if not credentials:
         return {
             'statusCode': 500,
@@ -96,24 +100,19 @@ def lambda_handler(event, context):
         # Attempt to fetch the 10 most recent submissions from a subreddit
         submissions = reddit.subreddit('pokemontrades').new(limit=10)
 
-        # Try accessing the fetched submissions to trigger any lazy-loading exceptions
+        # Try accessing the fetched submissions to trigger any lazy-loading
+        # exceptions
         for submission in submissions:
             print(submission.title)
 
-        # If no exceptions were raised up to this point, the operation was successful
+        # If no exceptions were raised up to this point, the operation was
+        # successful
         print("Fetched submissions successfully.")
-    except praw.exceptions.PRAWException as e:
-        # Handle PRAW-specific exceptions
-        logger.error(f"An error occurred: {e}")
-        return {
-            'statusCode': 500,
-            'body': json.dumps('Failed to load Reddit credentials.')
-        }
     except Exception as e:
         # Handle other possible exceptions
         return {
             'statusCode': 500,
-            'body': json.dumps('Failed to load Reddit credentials.')
+            'body': json.dumps(f'Failed to load Reddit credentials:{e}')
         }
 
     fetch_and_send_posts(reddit)
@@ -124,4 +123,4 @@ def lambda_handler(event, context):
 
 # Uncomment if running locally or outside of AWS Lambda
 # if __name__ == "__main__":
-#     lambda_handler(None, None)
+#  lambda_handler(None, None)
