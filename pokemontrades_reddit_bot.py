@@ -13,10 +13,10 @@ logger.setLevel(logging.INFO)
 AWS_REGION = "us-east-1"
 
 
-def load_reddit_credentials():
+def load_json_file(json_file):
     # Load Reddit credentials from an external JSON file.
     try:
-        with open('cred_reddit.json', 'r') as f:
+        with open(json_file, 'r') as f:
             credentials = json.load(f)
             return credentials
     except FileNotFoundError as e:
@@ -25,22 +25,6 @@ def load_reddit_credentials():
     except JSONDecodeError as e:
         logger.error(f"The JSON file contains invalid JSON: "
                      f"{e}")
-        sys.exit(1)
-    except Exception as e:
-        logger.error(f"Error loading Reddit credentials: {e}")
-        sys.exit(1)
-
-
-def load_emails():
-    try:
-        with open('emails.json', 'r') as f:
-            credentials = json.load(f)
-            return credentials['sender_email'], credentials['recipient_email']
-    except FileNotFoundError as e:
-        logger.error(f"File not found: {e}")
-        sys.exit(1)
-    except JSONDecodeError as e:
-        logger.error(f"The JSON file contains invalid JSON: {e}")
         sys.exit(1)
     except Exception as e:
         logger.error(f"Error loading Reddit credentials: {e}")
@@ -59,9 +43,9 @@ def init_reddit(credentials):
 # Function to send an email with AWS SES
 def send_email(subject, body):
     ses = boto3.client('ses', region_name=AWS_REGION)
-    emails_tuple = load_emails()
-    sender_email = emails_tuple[0]
-    recipient_email = emails_tuple[1]
+    emails = load_json_file('emails.json')
+    sender_email = emails['sender_email']
+    recipient_email = emails['recipient_email']
     try:
         response = ses.send_email(
             Source=sender_email,
@@ -88,7 +72,7 @@ def fetch_and_send_posts(reddit):
 
 # Lambda handler or main entry point
 def lambda_handler(event, context):
-    credentials = load_reddit_credentials()
+    credentials = load_json_file('cred_reddit.json')
     if not credentials:
         return {
             'statusCode': 500,
@@ -121,6 +105,6 @@ def lambda_handler(event, context):
         'body': json.dumps('Function executed successfully!')
     }
 
-# Uncomment if running locally or outside of AWS Lambda
+# only if running locally or outside of AWS Lambda
 # if __name__ == "__main__":
 #  lambda_handler(None, None)
