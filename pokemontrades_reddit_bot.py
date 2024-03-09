@@ -12,7 +12,7 @@ logger.setLevel(logging.INFO)
 # Constants
 AWS_REGION = "us-east-1"
 
-
+# Open and load JSON file
 def load_json_file(json_file):
     # Load Reddit credentials from an external JSON file.
     try:
@@ -74,6 +74,7 @@ def fetch_and_send_posts(reddit):
 def lambda_handler(event, context):
     credentials = load_json_file('cred_reddit.json')
     if not credentials:
+        logger.info(f"Cloudwatch logs group: {context.log_group_name}")
         return {
             'statusCode': 500,
             'body': json.dumps('Failed to load Reddit credentials.')
@@ -93,6 +94,7 @@ def lambda_handler(event, context):
         # successful
         print("Fetched submissions successfully.")
     except Exception as e:
+        logger.info(f"Cloudwatch logs group: {context.log_group_name}")
         # Handle other possible exceptions
         return {
             'statusCode': 500,
@@ -100,6 +102,7 @@ def lambda_handler(event, context):
         }
 
     fetch_and_send_posts(reddit)
+    logger.info(f"Cloudwatch logs group: {context.log_group_name}")
     return {
         'statusCode': 200,
         'body': json.dumps('Function executed successfully!')
