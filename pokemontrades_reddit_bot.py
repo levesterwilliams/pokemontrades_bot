@@ -64,8 +64,8 @@ def send_email(subject, body):
 def fetch_and_send_posts(reddit):
     subreddit = reddit.subreddit('pokemontrades')
     for submission in subreddit.new(limit=10):
-        if 'giveaway' in submission.title.lower():
-            subject = f"Reddit Giveaway Alert: {submission.title}"
+        if submission.link_flair_text == 'SV':
+            subject = f"Reddit SV Alert: {submission.title}"
             body = submission.selftext
             send_email(subject, body)
 
