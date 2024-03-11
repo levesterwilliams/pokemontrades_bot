@@ -61,13 +61,23 @@ def send_email(subject, body):
 
 
 # Main function to fetch posts and send emails
-def fetch_and_send_posts(reddit):
+def fetch_and_send_posts(reddit, flair):
     subreddit = reddit.subreddit('pokemontrades')
+    email_body = (f'Hello Levester,\n\nHere are the posts that match your '
+                  f'criteria:\n\n')
+    found_posts = False
+
     for submission in subreddit.new(limit=10):
-        if submission.link_flair_text == 'SV':
-            subject = f"Reddit SV Alert: {submission.title}"
-            body = submission.selftext
-            send_email(subject, body)
+        if submission.link_flair_text == flair:
+            found_posts = True
+            email_body += f"**Title**: {submission.title}\n\n> {submission.selftext}\n\n"
+
+    if found_posts:
+        subject = "Reddit SV Flair Alert"
+        print(f'The mail has been sent as the following:\n{email_body}')
+        send_email(subject, email_body)
+    else:
+        print("No SV flair posts found.")
 
 
 # Lambda handler or main entry point
@@ -100,8 +110,8 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'body': json.dumps(f'Failed to load Reddit credentials:{e}')
         }
-
-    fetch_and_send_posts(reddit)
+    flair = 'SV'
+    fetch_and_send_posts(reddit, flair)
     logger.info(f"Cloudwatch logs group: {context.log_group_name}")
     return {
         'statusCode': 200,
