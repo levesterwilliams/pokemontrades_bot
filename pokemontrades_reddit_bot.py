@@ -1,3 +1,31 @@
+# pokemontrades_reddit_bot.py
+#
+# This program, as fo now, reads the top 10 new posts from the subbreddit
+# r/pokemontrades and sends one email containing the title and message body
+# for each of those 10 posts that matched the designated flair tags.
+#
+# Levester Williams
+# 2 February 2024
+#
+# Platform info:
+# - python 3.11.0
+# - boto3==1.34.59
+# - botocore==1.34.59
+# - certifi==2024.2.2
+# - charset-normalizer==3.3.2
+# - idna==3.6
+# - jmespath==1.0.1
+# - praw==7.7.1
+# - prawcore==2.4.0
+# - python-dateutil==2.9.0.post0
+# - requests==2.31.0
+# - s3transfer==0.10.0
+# - six==1.16.0
+# - urllib3==2.0.7
+# - websocket-client==1.7.0
+# - update-checker==0.18.0
+#
+
 import json
 import praw
 import boto3
@@ -100,8 +128,6 @@ def lambda_handler(event, context):
         for submission in submissions:
             print(submission.title)
 
-        # If no exceptions were raised up to this point, the operation was
-        # successful
         print("Fetched submissions successfully.")
     except Exception as e:
         logger.info(f"Cloudwatch logs group: {context.log_group_name}")
