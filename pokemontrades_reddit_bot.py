@@ -33,16 +33,24 @@ import logging
 from json import JSONDecodeError
 import sys
 
-# Configure logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
-# Constants
 AWS_REGION = "us-east-1"
 
-# Open and load JSON file
 def load_json_file(json_file):
-    # Load Reddit credentials from an external JSON file.
+    """
+    Load Reddit credentials from an external JSON file.
+
+    Args:
+        json_file (str): Path to the JSON file
+
+    Returns:
+        dict: Dictionary
+
+    Notes:
+        If error occurs in opening JSON file, the function will exit with an
+        error message.
+    """
     try:
         with open(json_file, 'r') as f:
             credentials = json.load(f)
@@ -61,15 +69,36 @@ def load_json_file(json_file):
 
 # Initialize PRAW with credentials
 def init_reddit(credentials):
+    """
+    Initialize Reddit instance.
+
+    Args:
+        credentials (JSON): Reddit credentials.
+
+    Returns:
+        dict: Reddit
+    """
     return praw.Reddit(
         client_id=credentials['client_id'],
         client_secret=credentials['client_secret'],
         user_agent=credentials['user_agent']
     )
 
-
-# Function to send an email with AWS SES
 def send_email(subject, body):
+    """
+    Send an email via AWS SES.
+
+    Args:
+        subject (str): Subject of the email.
+        body (str): Body of the email.
+
+    Returns:
+        None
+
+    Notes:
+        Client must have an access key and secret access key defined in the
+        config.json file.
+    """
     ses = boto3.client('ses', region_name=AWS_REGION)
     emails = load_json_file('emails.json')
     sender_email = emails['sender_email']
@@ -90,6 +119,17 @@ def send_email(subject, body):
 
 # Main function to fetch posts and send emails
 def fetch_and_send_posts(reddit, flair):
+    """
+    Fetches the subbreddit posts and sends them.
+
+    Args:
+        reddit (Reddit): The Reddit instance to fetch and send posts from
+        designated email address.
+        flair (str): The flair/tag of the subreddit posts.
+
+    Returns:
+        None
+    """
     subreddit = reddit.subreddit('pokemontrades')
     email_body = (f'Hello Levester,\n\nHere are the posts that match your '
                   f'criteria:\n\n')
@@ -110,6 +150,20 @@ def fetch_and_send_posts(reddit, flair):
 
 # Lambda handler or main entry point
 def lambda_handler(event, context):
+    """
+    Handles an incoming Lambda by processing the incoming request and sending
+    it to the appropriate email addresses.
+
+    Args:
+        event(dict): Cron expression as defined in AWS EventBridge to invoke
+        the Lambda function.
+        context(string): Contains the AWS Lambda runtime information.
+
+    Returns:
+        dict: A response from the Lambda function that includes status code and
+        body including any error information.
+
+    """
     credentials = load_json_file('cred_reddit.json')
     if not credentials:
         logger.info(f"Cloudwatch logs group: {context.log_group_name}")
