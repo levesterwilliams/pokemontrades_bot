@@ -24,7 +24,7 @@
 # - urllib3==2.0.7
 # - websocket-client==1.7.0
 # - update-checker==0.18.0
-#
+# - openai==1.14.3
 
 import json
 import praw
@@ -32,6 +32,7 @@ import boto3
 import logging
 from json import JSONDecodeError
 import sys
+import openai
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -39,7 +40,7 @@ AWS_REGION = "us-east-1"
 
 def load_json_file(json_file):
     """
-    Load Reddit credentials from an external JSON file.
+    Loads Reddit credentials from an external JSON file.
 
     Args:
         json_file (str): Path to the JSON file
@@ -70,7 +71,7 @@ def load_json_file(json_file):
 # Initialize PRAW with credentials
 def init_reddit(credentials):
     """
-    Initialize Reddit instance.
+    Initializes a Reddit instance.
 
     Args:
         credentials (JSON): Reddit credentials.
@@ -86,7 +87,7 @@ def init_reddit(credentials):
 
 def send_email(subject, body):
     """
-    Send an email via AWS SES.
+    Sends an email via AWS SES.
 
     Args:
         subject (str): Subject of the email.
@@ -148,7 +149,6 @@ def fetch_and_send_posts(reddit, flair):
         print("No SV flair posts found.")
 
 
-# Lambda handler or main entry point
 def lambda_handler(event, context):
     """
     Handles an incoming Lambda by processing the incoming request and sending
