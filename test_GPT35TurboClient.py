@@ -3,8 +3,16 @@ from GPT35TurboClient import GPT35TurboClient
 from JSON_freader import JSONfreader
 import openai
 
-class MyTestCase(unittest.TestCase):
+class TestGPT35TurboClient(unittest.TestCase):
+    """
+    Test Suite for the GPT35TurboClient class.
 
+    This class tests the GPT35TurboClient to ensure it correctly initializes
+    with valid input parameters and handles various input types gracefully,
+    preventing and reporting type errors. It also tests the functionality of
+    generating specific JSON strings based on the input to validate both the
+    successful generation of strings and proper handling of erroneous inputs.
+    """
     def test_initialization_variables01(self):
         self.client = GPT35TurboClient("key", "model")
         self.assertEqual(self.client._finetuned_model, "model")
