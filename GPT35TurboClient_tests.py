@@ -36,8 +36,8 @@ class MyTestCase(unittest.TestCase):
         reader = JSONfreader()
         cred = reader.load_json_file('ftGPTturbo_pkmn_cred.json')
         client = GPT35TurboClient(cred['secret_key'], cred['model_name'])
-        self.assertEqual("{ \"Sender's Pokemon\" :  [ { \"Pokemon\" : \"Pansage\" , \"IV\" : [] , \"nature\" : [] , \"gender\" : [] , \"ability\" : [] , \"hidden ability\" : [] , \"language\" : [] , \"form\" : [] , \"special\" : [] , \"pokeball\" :[] , \"shiny\" : false } , { \"Pokemon\" : \"Pansear\" , \"IV\" : [] , \"nature\" : [] , \"gender\" : [] , \"ability\" : [] , \"hidden ability\" : [] , \"language\" : [] , \"form\" : [] , \"special\" : [] , \"pokeball\" :[] , \"shiny\" : false } ] , \"Requested Pokemon\" : [ { \"Pokemon\" : \"Simisage\" , \"IV\" : [] , \"nature\" : [] , \"gender\" : [] , \"ability\" : [] , \"hidden ability\" : [] , \"language\" : [] , \"form\" : [] , \"special\" : [] , \"pokeball\" : [] , \"shiny\" : false } ] , \"version\" : \"Home\" , \"action\" : \"trade\" }",
-                         client.generate_jsonstring("LF: Simisage FT: Pansage/ Pansear\nHome\n"))
+        self.assertEqual("{ \"Sender's Pokemon\" :  [] , \"Requested Pokemon\" : [ { \"Pokemon\" : \"Cranidos\" , \"IV\" : [] , \"nature\" : [] , \"gender\" : [] , \"ability\" : [] , \"hidden ability\" : [] , \"language\" : [] , \"form\" : [] , \"special\" : [] , \"pokeball\" : [] , \"shiny\" : false } ] , \"version\" : \"PLA\" , \"action\" : \"trade\" }",
+                         client.generate_jsonstring("LF: Cranidos to complete Pokédex\nPLA"))
 
     def test_generate_jsonstring_error01(self):
         reader = JSONfreader()
