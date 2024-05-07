@@ -13,7 +13,7 @@ class TestGPT35TurboClient(unittest.TestCase):
     generating specific JSON strings based on the input to validate both the
     successful generation of strings and proper handling of erroneous inputs.
     """
-    def test_initialization_variables01(self):
+    def test_initialization_successful(self):
         self.client = GPT35TurboClient("key", "model")
         self.assertEqual(self.client._finetuned_model, "model")
 
