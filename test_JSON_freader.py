@@ -20,33 +20,38 @@ class TestJSONfreader(unittest.TestCase):
     def setUp(self):
         self.reader = JSONfreader()
 
-    @patch("builtins.open", new_callable=mock_open, read_data='{"user": '
-                                                              '"admin", "password": "1234"}')
-    def test_load_json_file_success(self, mock_file):
-        result = self.reader.load_json_file("credentials.json")
-        self.assertEqual(result, {"user": "admin", "password": "1234"})
+    def test_load_json_file_successful(self):
+        with patch("builtins.open", new_callable=mock_open, read_data='{'
+                                                                      '"user":"admin", "password": "1234"}'):
+            result = self.reader.load_json_file("credentials.json")
+            self.assertEqual(result, {"user": "admin", "password": "1234"})
 
-    @patch("builtins.open", mock_open())
-    @patch("json.load", side_effect=FileNotFoundError("File not found"))
-    def test_load_json_file_not_found(self, mock_json_load):
-        with self.assertRaises(SystemExit) as cm:
-            self.reader.load_json_file("nonexistent.json")
-        self.assertEqual(cm.exception.code, 1)
+    def test_load_json_file_not_found(self):
+        with patch("builtins.open", mock_open()) as mocked_open:
+            mocked_open.side_effect = FileNotFoundError
 
-    @patch("builtins.open", mock_open())
-    @patch("json.load", side_effect=json.JSONDecodeError(
-        "Expecting value", "line 1 column 1 (char 0)", 0))
-    def test_load_json_file_invalid_json(self, mock_json_load):
-        with self.assertRaises(SystemExit) as cm:
-            self.reader.load_json_file("invalid.json")
-        self.assertEqual(cm.exception.code, 1)
+            with self.assertRaises(RuntimeError) as context:
+                self.reader.load_json_file("nonexistent.json")
+            self.assertEqual(str(context.exception), "Failed to load credentials due to missing file.")
 
-    @patch("builtins.open", mock_open())
-    @patch("json.load", side_effect=Exception("Unexpected error"))
-    def test_load_json_file_unexpected_error(self, mock_json_load):
-        with self.assertRaises(SystemExit) as cm:
-            self.reader.load_json_file("error.json")
-        self.assertEqual(cm.exception.code, 1)
+
+    def test_load_json_file_invalid_json(self):
+        with patch("builtins.open", mock_open()) as mocked_open:
+            mocked_open.side_effect = json.JSONDecodeError("Expecting "
+                                                            "value", "line 1 column 1 (char 0)", 0)
+
+            with self.assertRaises(RuntimeError) as context:
+                 self.reader.load_json_file("invalid.json")
+            self.assertEqual(str(context.exception), "The JSON file contains invalid JSON")
+
+
+    def test_load_json_file_unexpected_error(self):
+        with patch("builtins.open", mock_open()) as mocked_open:
+            mocked_open.side_effect = Exception
+
+            with self.assertRaises(RuntimeError) as context:
+                self.reader.load_json_file("error.json")
+            self.assertEqual(str(context.exception), "Error in loading Reddit credentials")
 
 if __name__ == "__main__":
     unittest.main()
