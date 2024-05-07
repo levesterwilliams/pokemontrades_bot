@@ -1,6 +1,6 @@
 import unittest
-from GPT35TurboClient import GPT35TurboClient
-from JSON_freader import JSONfreader
+from gpt35turbo_client import GPT35TurboClient
+from jsonf_reader import JSONfreader
 import openai
 
 class TestGPT35TurboClient(unittest.TestCase):
@@ -36,16 +36,26 @@ class TestGPT35TurboClient(unittest.TestCase):
         reader = JSONfreader()
         cred = reader.load_json_file('ftGPTturbo_pkmn_cred.json')
         client = GPT35TurboClient(cred['secret_key'], cred['model_name'])
-        self.assertEqual("{ \"Sender's Pokemon\" :  [] , \"Requested Pokemon\" : [] , \"version\" : \"SWSH\" , \"action\" : \"closed\" }",
+        self.assertEqual("{ \"Sender's Pokemon\" :  [] , \"Requested "
+                         "Pokemon\" : [] , \"version\" : \"SWSH\" , "
+                         "\"action\" : \"closed\" }".replace(" ", ""),
                          client.generate_jsonstring("Help me evolve my "
-                                                    "spritzee\nSWSH (Closed)\n\nI have sachet just need TB"))
+                                                    "spritzee\nSWSH ("
+                                                    "Closed)\n\nI have sachet just need TB").replace(" ", ""))
 
     def test_generate_jsonstring_successful02(self):
         reader = JSONfreader()
         cred = reader.load_json_file('ftGPTturbo_pkmn_cred.json')
         client = GPT35TurboClient(cred['secret_key'], cred['model_name'])
-        self.assertEqual("{ \"Sender's Pokemon\" :  [] , \"Requested Pokemon\" : [ { \"Pokemon\" : \"Cranidos\" , \"IV\" : [] , \"nature\" : [] , \"gender\" : [] , \"ability\" : [] , \"hidden ability\" : [] , \"language\" : [] , \"form\" : [] , \"special\" : [] , \"pokeball\" : [] , \"shiny\" : false } ] , \"version\" : \"PLA\" , \"action\" : \"trade\" }",
-                         client.generate_jsonstring("LF: Cranidos to complete Pokédex\nPLA"))
+        self.assertEqual("{ \"Sender's Pokemon\" :  [] , \"Requested "
+                         "Pokemon\" : [ { \"Pokemon\" : \"Cranidos\" , "
+                         "\"IV\" : [] , \"nature\" : [] , \"gender\" : [] , "
+                         "\"ability\" : [] , \"hidden ability\" : [] , "
+                         "\"language\" : [] , \"form\" : [] , \"special\" : ["
+                         "] , \"pokeball\" : [] , \"shiny\" : false } ] , "
+                         "\"version\" : \"PLA\" , \"action\" : \"trade\" "
+                         "}".replace(" ", ""),
+                         client.generate_jsonstring("LF: Cranidos to complete Pokédex\nPLA").replace(" ", ""))
 
     def test_generate_jsonstring_error01(self):
         reader = JSONfreader()
