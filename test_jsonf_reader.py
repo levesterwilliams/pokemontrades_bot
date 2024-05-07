@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import mock_open, patch
 import json
-from JSON_freader import JSONfreader
+from jsonf_reader import JSONfreader
 
 class TestJSONfreader(unittest.TestCase):
     """
