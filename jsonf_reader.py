@@ -22,6 +22,7 @@ class JSONfreader:
             dict: Dictionary containing the loaded credentials, or None if an error occurs.
 
         Raises:
+            TypeError: A type error is raised if filename is not a string.
             RuntimeError: A runtime error is raised any errors occur.
 
         Notes:
@@ -29,6 +30,9 @@ class JSONfreader:
             an error message and raise a runtime error exception for
             client/caller to handle.
         """
+        if not isinstance(json_file, str):
+            raise TypeError("Argument must be a string")
+
         try:
             with open(json_file, 'r') as file:
                 self._credentials = json.load(file)

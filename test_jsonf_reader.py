@@ -26,7 +26,19 @@ class TestJSONfreader(unittest.TestCase):
             result = self.reader.load_json_file("credentials.json")
             self.assertEqual(result, {"user": "admin", "password": "1234"})
 
-    def test_load_json_file_not_found(self):
+    def test_load_json_file_invalid_argument01(self):
+         with self.assertRaises(TypeError) as context:
+            self.reader.load_json_file(1)
+            self.assertEqual(str(context.exception), "Argument must be a "
+                                                     "string")
+
+    def test_load_json_file_invalid_argument02(self):
+         with self.assertRaises(TypeError) as context:
+            self.reader.load_json_file(None)
+            self.assertEqual(str(context.exception), "Argument must be a "
+                                                     "string")
+
+    def test_load_json_file_not_found01(self):
         with patch("builtins.open", mock_open()) as mocked_open:
             mocked_open.side_effect = FileNotFoundError
 
@@ -34,6 +46,14 @@ class TestJSONfreader(unittest.TestCase):
                 self.reader.load_json_file("nonexistent.json")
             self.assertEqual(str(context.exception), "Failed to load credentials due to missing file.")
 
+    def test_load_json_file_not_found02(self):
+        with patch("builtins.open", mock_open()) as mocked_open:
+            mocked_open.side_effect = FileNotFoundError
+
+            with self.assertRaises(RuntimeError) as context:
+                self.reader.load_json_file("")
+            self.assertEqual(str(context.exception),
+                             "Failed to load credentials due to missing file.")
 
     def test_load_json_file_invalid_json(self):
         with patch("builtins.open", mock_open()) as mocked_open:
