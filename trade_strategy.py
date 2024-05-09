@@ -21,29 +21,41 @@ class TradeStrategy:
         if len(list) == 0 or len(pkmn_csv_data) == 0:
             return False
         print(list)
+        print(f"flag is {flag}")
         for pokemon in list:
             name = pokemon["Pokemon"].lower()
             requested_pokeballs = pokemon.get("pokeball", [])
             requested_abilities = pokemon.get("ability", [])
+            print(f"{name}")
             if name in pkmn_csv_data:
                 pokeball_match = any(ball in pkmn_csv_data[name]['pokeballs']
                                      for ball in requested_pokeballs) if (
                     requested_pokeballs) else flag
-
+                print (f"pokeball match is {pokeball_match}")
                 abilities_match = any(
                     ability in pkmn_csv_data[name]['abilities'] for ability in
                     requested_abilities) if flag and requested_abilities else flag
+                print(f"ability match is {abilities_match}")
 
-                if (pokeball_match and abilities_match) or (not flag and not(
-                        pokeball_match and abilities_match)): 
-                    continue
+                if flag and pokeball_match and abilities_match:
+                   continue
+                elif flag and (not pokeball_match or not abilities_match):
+                    return True
+                elif not flag and pokeball_match or abilities_match:
+                    return True
                 else:
-                    print("here 2")
-                    return flag
+                    continue
+                #if (pokeball_match and abilities_match) or (not flag and not(
+                       # pokeball_match and abilities_match)):
+                    #continue
+                #else:
+                   # print(f"here 2 {flag}")
+                    #return flag
             else:
-                print("here 1")
+                print(f"here 1 {flag}")
                 return flag
-        print("here 0")
+
+        print(f"here 0 {flag}")
         return not flag
 
     def execute(self, sender_list: List[Dict[str, Any]],
