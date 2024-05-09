@@ -8,7 +8,7 @@ class TestGPT35TurboClient(unittest.TestCase):
     Test Suite for the GPT35TurboClient class.
 
     This class tests the GPT35TurboClient to ensure it correctly initializes
-    with valid input parameters and handles various input types gracefully,
+    with valid input parameters and handles various input types gracefully
     preventing and reporting type errors. It also tests the functionality of
     generating specific JSON strings based on the input to validate both the
     successful generation of strings and proper handling of erroneous inputs.
@@ -18,17 +18,14 @@ class TestGPT35TurboClient(unittest.TestCase):
         self.assertEqual(self.client._finetuned_model, "model")
 
     def test_init_type_error01(self):
-        # Test with non-string for _secret_key
         with self.assertRaises(TypeError):
             GPT35TurboClient(123, "valid_model_name")
 
     def test_init_type_error02(self):
-        # Test with non-string for _finetuned_model
         with self.assertRaises(TypeError):
             GPT35TurboClient("key", 5)
 
     def test_init_type_error03(self):
-        # Test with non-string for None
         with self.assertRaises(TypeError):
             GPT35TurboClient(None, None)
 
