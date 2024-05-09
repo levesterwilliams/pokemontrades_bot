@@ -13,7 +13,7 @@ class PokeballType(Enum):
     LEVEL = "level"
     SAFARI = "safari"
     SPORT = "sport"
-    POKE = "poke"
+    POKEBALL = "pokeball"
     GREAT = "great"
     ULTRA = "ultra"
     MASTER = "master"
@@ -28,7 +28,7 @@ class PokeballType(Enum):
     QUICK = "quick"
     DUSK = "dusk"
     CHERISH = "cherish"
-    POKE_H = "poke-h"
+    POKEBALL_H = "pokeball-h"
     GREAT_H = "great-h"
     ULTRA_H = "ultra-h"
     FEATHER = "feather"
@@ -39,13 +39,15 @@ class PokeballType(Enum):
     GIGATON = "gigaton"
     ORIGIN = "origin"
 
-    # Usage
     def validate_pokeball(ball):
         """
         Validate pokeball.
 
         Args:
             ball (str): the pokeball to validate
+
+        Returns:
+            bool: True if ball is an enum
         """
         if not isinstance(ball, str):
             raise TypeError("Pokeball must be a string.")

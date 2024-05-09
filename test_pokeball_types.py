@@ -37,7 +37,7 @@ class TestPokeballTypes(unittest.TestCase):
         self.assertTrue(PokeballType.validate_pokeball("sport"))
 
     def test_validate_pokeball_valid12(self):
-        self.assertTrue(PokeballType.validate_pokeball("poke"))
+        self.assertTrue(PokeballType.validate_pokeball("pokeball"))
 
     def test_validate_pokeball_valid13(self):
         self.assertTrue(PokeballType.validate_pokeball("great"))
@@ -82,7 +82,7 @@ class TestPokeballTypes(unittest.TestCase):
         self.assertTrue(PokeballType.validate_pokeball("cherish"))
 
     def test_validate_pokeball_valid27(self):
-        self.assertTrue(PokeballType.validate_pokeball("poke-h"))
+        self.assertTrue(PokeballType.validate_pokeball("pokeball-h"))
 
     def test_validate_pokeball_valid28(self):
         self.assertTrue(PokeballType.validate_pokeball("great-h"))
