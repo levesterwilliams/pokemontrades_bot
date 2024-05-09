@@ -46,7 +46,7 @@ class TestGiveawayStrategy(unittest.TestCase):
                         'ability': ['static']}]
         requested_list = []
         csv_data = {
-            'pikachu': {'abilities': ['static'], 'pokeballs': ['pokeball']}}
+            'Pikachu': {'abilities': ['static'], 'pokeballs': ['pokeball']}}
         result = self.strategy.execute(sender_list, requested_list, csv_data)
         self.assertTrue(result)
 
