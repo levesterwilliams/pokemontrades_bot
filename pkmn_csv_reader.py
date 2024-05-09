@@ -84,4 +84,3 @@ class PokemonCsvReader:
     def get_pokemons(self):
         return self._pokemons
 
-    file
