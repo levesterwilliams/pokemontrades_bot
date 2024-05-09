@@ -6,6 +6,14 @@ from pokeball_types import PokeballType
 
 
 class PokemonCsvReader:
+    """
+    Class to read the csv file or Excel file containing registered Pokemon data
+    about abilities and pokeballs captured in. The class returns a dict of
+    Pokemons that cantains a dict with "abilities" key with list of its
+    abilities as values and dict with "pokeballs" key with a list of pokeball
+    types as values.
+
+    """
     def __init__(self):
         self._pokemons = {}
 
@@ -132,7 +140,7 @@ class PokemonCsvReader:
             pokeballs = [self.normalize_and_clean(pb) for pb in
                          balls_col_list if
                          pd.notna(row[pb]) and row[pb].strip() != '' and
-                         PokeballType.validate_pokeball(pb)]
+                         PokeballType.validate_pokeball(self.normalize_and_clean(pb))]
 
             if poke_name not in self._pokemons:
                 self._pokemons[poke_name] = {

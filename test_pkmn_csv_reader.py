@@ -40,6 +40,45 @@ class TestFileReader(unittest.TestCase):
         self.assertEqual(dict['bulbasaur']['abilities'],
                          ['overgrow'])
 
+    @patch('pandas.read_excel')
+    def test_read_excel_file02(self, mock_read_excel):
+        mock_read_excel.return_value = pd.DataFrame(
+            {'Pokemon': ['Bulbasaur'], 'Ability': ['Overgrow'], 'Master': [
+                "x"]})
+        self._reader.read_file('test.xlsx')
+        dict = self._reader.get_pokemons()
+        self.assertIn('bulbasaur', dict)
+        pokeball = dict["bulbasaur"]['pokeballs'][0]
+        self.assertEqual("master", pokeball)
+        self.assertEqual(dict['bulbasaur']['abilities'],
+                         ['overgrow'])
+
+    @patch('pandas.read_excel')
+    def test_read_excel_file03(self, mock_read_excel):
+        mock_read_excel.return_value = pd.DataFrame(
+            {'Pokemon': ['Bulbasaur'], 'Ability': ['Overgrow'], 'Ori-gin ': [
+                "x"]})
+        self._reader.read_file('test.xlsx')
+        dict = self._reader.get_pokemons()
+        self.assertIn('bulbasaur', dict)
+        pokeball = dict["bulbasaur"]['pokeballs'][0]
+        self.assertEqual("origin", pokeball)
+        self.assertEqual(dict['bulbasaur']['abilities'],
+                         ['overgrow'])
+
+    @patch('pandas.read_excel')
+    def test_read_excel_test_size(self, mock_read_excel):
+        mock_read_excel.return_value = pd.DataFrame(
+            {'Pokemon': ['Bulbasaur'], 'Ability': ['Overgrow'], 'candy': [
+                "x"]})
+        self._reader.read_file('test.xlsx')
+        dict = self._reader.get_pokemons()
+        self.assertIn('bulbasaur', dict)
+        self.assertEqual(len(dict["bulbasaur"]['pokeballs']), 0)
+        self.assertEqual(dict['bulbasaur']['abilities'],
+                         ['overgrow'])
+        self.assertEqual(len(dict['bulbasaur']['abilities']), 1)
+
     def test_invalid_file_type(self):
         with self.assertRaises(RuntimeError) as context:
             self._reader.read_file('test.txt')
