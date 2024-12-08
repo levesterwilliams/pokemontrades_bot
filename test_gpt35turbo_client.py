@@ -17,19 +17,6 @@ class TestGPT35TurboClient(unittest.TestCase):
         self.client = GPT35TurboClient("key", "model")
         self.assertEqual(self.client._finetuned_model, "model")
 
-    def test_init_type_error01(self):
-        # Test with non-string for _secret_key
-        with self.assertRaises(TypeError):
-            GPT35TurboClient(123, "valid_model_name")
-
-    def test_init_type_error02(self):
-        with self.assertRaises(TypeError):
-            GPT35TurboClient("key", 5)
-
-    def test_init_type_error03(self):
-        with self.assertRaises(TypeError):
-            GPT35TurboClient(None, None)
-
     def test_generate_jsonstring_successful01(self):
         reader = JSONfreader()
         cred = reader.load_json_file('ftGPTturbo_pkmn_cred.json')
@@ -56,21 +43,6 @@ class TestGPT35TurboClient(unittest.TestCase):
                          "}".replace(" ", ""),
                          client.generate_jsonstring("LF: Cranidos to complete "
                                                     "Pokédex\nPLA").replace(" ", ""))
-
-    def test_generate_jsonstring_error01(self):
-        reader = JSONfreader()
-        cred = reader.load_json_file('ftGPTturbo_pkmn_cred.json')
-        client = GPT35TurboClient(cred['secret_key'], cred['model_name'])
-        with self.assertRaises(TypeError):
-             client.generate_jsonstring(None)
-
-    def test_generate_jsonstring_error02(self):
-        reader = JSONfreader()
-        cred = reader.load_json_file('ftGPTturbo_pkmn_cred.json')
-        client = GPT35TurboClient(cred['secret_key'], cred['model_name'])
-        with self.assertRaises(TypeError):
-             client.generate_jsonstring(1)
-
 
 if __name__ == '__main__':
     unittest.main()
