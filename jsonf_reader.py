@@ -1,7 +1,7 @@
 # jsonf_reader.py
 #
 # Levester Williams
-# 31 July 2024
+# 2 February 2024
 #
 # Platform info:
 # - python 3.12.0
