@@ -1,9 +1,17 @@
+# pkmn_csv_reader.py
+#
+# Levester Williams
+# 25 April 2024
+#
+# Platform info:
+# - python 3.12.0
+#
+
 import pandas as pd
 import unicodedata
 import re
 from pathlib import Path
-from pokeball_types import PokeballType
-
+from pokeball_types import validate_pokeball
 
 class PokemonCsvReader:
     """
@@ -17,7 +25,7 @@ class PokemonCsvReader:
     def __init__(self):
         self._pokemons = {}
 
-    def read_file(self, filename):
+    def read_file(self, filename: str) -> None:
         """
         Reads the csv file.
 
@@ -27,14 +35,17 @@ class PokemonCsvReader:
         Returns:
             None
 
-        Raise: TypeError if the filename is not a str; ValueError if the filename is
-        unsupported or the filename isn't a valid csv file';
-        FileNotFoundError if the filename does not exist; PermissionError if the filename
-        is locked; pd.errors.EmptyDataError if the file is empty; and RuntimeError if the file
-        runs into other issues.
+        Raise:
+            ValueError if the filename is unsupported or the filename isn't
+            a valid csv file'
+
+            FileNotFoundError if the filename does not exist
+
+            PermissionError if the filename is locked
+
+            pd.errors.EmptyDataError if the file is empty; and RuntimeError if
+            the file runs into other issues.
         """
-        if not isinstance(filename, str):
-            raise TypeError("Argument must be a string.")
         try:
             if filename.endswith('.csv'):
                 data_frames = pd.read_csv(filename)
@@ -54,7 +65,7 @@ class PokemonCsvReader:
         except Exception as e:
             raise RuntimeError("Unexpected error: " + str(e))
 
-    def normalize_and_clean(self, text):
+    def normalize_and_clean(self, text: str) -> str:
         """
         Normalize and clean the text to remove punctuation and whitespace.
 
@@ -63,13 +74,7 @@ class PokemonCsvReader:
 
         Returns:
             str: The normalized text.
-
-        Raises:
-            ValueError: If the argument is not a string.
         """
-        if not isinstance(text, str):
-            raise TypeError("Argument must be a string.")
-
         normalized_text = unicodedata.normalize('NFKD', text)
         ascii_text = normalized_text.encode('ascii', 'ignore').decode('utf-8')
         lower_text = ascii_text.lower()
@@ -80,7 +85,7 @@ class PokemonCsvReader:
         cleaned_text = cleaned_text.replace("î", "i")
         return cleaned_text
 
-    def find_column(self, df, column_name):
+    def find_column(self, df: pd.DataFrame, column_name: str) -> str:
         """
         Find the column.
 
@@ -93,17 +98,14 @@ class PokemonCsvReader:
 
         Raises:
             ValueError: If the column is not found.
-
         """
-        if not isinstance(column_name, str):
-            raise TypeError("Column name must be a string.")
         column_name = self.normalize_and_clean(column_name)
         for col in df.columns:
             if self.normalize_and_clean(col) == column_name:
                 return col
         raise ValueError(f"Column not found: {column_name}")
 
-    def process_data(self, data):
+    def process_data(self, data: pd.DataFrame) -> None:
         """
         Process the dataframe from a pokemon csv file and store the parsed data
         in inside _pokemon, a dict.
@@ -113,17 +115,7 @@ class PokemonCsvReader:
 
         Returns:
             None
-
-        Raises:
-           TypeError: If data is not a dataframe or column headers are not
-           string.
-
-        Note: The caller/client must handle and catch the errors raised.
-
         """
-        if not isinstance(data, pd.DataFrame):
-            raise TypeError(f"Expected pd.Dataframe. Actual type is : {str(type(data))}")
-
         for _, row in data.iterrows():
             poke_col_header = self.find_column(data, "Pokemon")
             ability_col_header = self.find_column(data, "Ability")
@@ -140,7 +132,7 @@ class PokemonCsvReader:
             pokeballs = [self.normalize_and_clean(pb) for pb in
                          balls_col_list if
                          pd.notna(row[pb]) and row[pb].strip() != '' and
-                         PokeballType.validate_pokeball(self.normalize_and_clean(pb))]
+                         validate_pokeball(self.normalize_and_clean(pb))]
 
             if poke_name not in self._pokemons:
                 self._pokemons[poke_name] = {
@@ -152,23 +144,24 @@ class PokemonCsvReader:
                 current_pokeballs = set(self._pokemons[poke_name]["pokeballs"])
                 updated_abilities = list(current_abilities.union(abilities))
                 updated_pokeballs = list(current_pokeballs.union(pokeballs))
-                self._pokemons[poke_name]['Abilities'] = updated_abilities
-                self._pokemons[poke_name]['Pokeballs'] = updated_pokeballs
+                self._pokemons[poke_name]['abilities'] = updated_abilities
+                self._pokemons[poke_name]['pokeballs'] = updated_pokeballs
 
 
     def get_pokemons(self):
         """
-        Return a dict of Pokemons that cantains a dict "abilities" with
-        list of its abilities as values and dict "pokeballs" with a list of
-        pokeball types as values
+        Return a nested dict of Pokemons where each key is a specific Pokemon
+        name and its value is a dict that contains the Pokemon's "abilities"
+        as a key and a list of its abilities as its values and another key
+        "pokeballs" with a list of pokeball types as values
 
         Args:
             None
 
         Returns:
-            _pokemons: A dict of Pokemons that contains a dict "abilities" with
-            its list of abilities as values and dict "pokeballs" with a list
-            of pokeball types as values
+            _pokemons: A dict of Pokemons that contains a dict with "abilities"
+            as the key and its list of abilities as values and dict
+            "pokeballs" with a list of pokeball types as values
         """
         return self._pokemons
 

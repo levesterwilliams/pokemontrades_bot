@@ -1,3 +1,12 @@
+# test_pkmn_csv_reader.py
+#
+# Levester Williams
+# 25 April 2024
+#
+# Platform info:
+# - python 3.12.0
+#
+
 import unittest
 from unittest.mock import patch
 import pandas as pd
@@ -11,7 +20,7 @@ def create_test_data(headers, data):
 
 class TestFileReader(unittest.TestCase):
     """
-    Test the PokemonCsvReader
+    Test the PokemonCsvReader.
     """
 
     def setUp(self):
@@ -103,11 +112,6 @@ class TestFileReader(unittest.TestCase):
             self._reader.read_file('empty.csv')
         self.assertEqual(str(context.exception), "The file is empty.")
 
-    def test_non_string_argument(self):
-        with self.assertRaises(TypeError) as context:
-            self._reader.read_file(123)
-        self.assertEqual(str(context.exception), "Argument must be a string.")
-
     @patch('pandas.read_csv', side_effect=Exception("Some error"))
     def test_unexpected_error(self, mock_read_csv):
         with self.assertRaises(RuntimeError) as context:
@@ -143,11 +147,6 @@ class TestFileReader(unittest.TestCase):
         expected_output = "cafe pokemon"
         result = self._reader.normalize_and_clean(input_text)
         self.assertEqual(result, expected_output)
-
-    def test_non_string_argument(self):
-        with self.assertRaises(TypeError) as context:
-            self._reader.normalize_and_clean(123)
-        self.assertEqual(str(context.exception), "Argument must be a string.")
 
     def test_empty_string(self):
         input_text = ""
@@ -226,12 +225,6 @@ class TestFileReader(unittest.TestCase):
         self.assertEqual(str(context.exception),
                          "Column not found: nonexistentcolumn")
 
-    def test_find_column_non_string_name(self):
-        df = pd.DataFrame()
-        with self.assertRaises(TypeError) as context:
-            self._reader.find_column(df, 123)
-        self.assertEqual(str(context.exception),
-                         "Column name must be a string.")
     @patch('pandas.read_csv')
     def test_find_column_with_normalization(self, mock_read_file):
         mock_read_file.return_value = create_test_data(
