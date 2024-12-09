@@ -8,7 +8,7 @@
 #
 
 import unittest
-from pokeball_types import PokeballType, validate_pokeball
+from pokeball_types import validate_pokeball
 
 class TestPokeballTypes(unittest.TestCase):
     """
