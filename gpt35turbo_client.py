@@ -1,7 +1,22 @@
+#gpt35turbo_client
+#
+# Levester Williams
+# 31 July 2024
+#
+# Platform info:
+# - python 3.12.0
+#
 import openai
 import os
 
 class GPT35TurboClient:
+    """
+    This class is responsible for making requests to the OpenAI API to generate
+    specified JSON string.
+
+    Methods:
+        generate(): Generates a JSON string.
+    """
     def __init__(self, secret_key: str, model_name: str) -> None:
         """
         Constructor to initialize GPT35TurboClient.
