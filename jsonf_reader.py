@@ -63,3 +63,5 @@ class JSONfreader:
         except Exception as e:
             logger.error(f"Error loading Reddit credentials::{e}")
             raise RuntimeError("Error in loading Reddit credentials") from e
+
+        return None
